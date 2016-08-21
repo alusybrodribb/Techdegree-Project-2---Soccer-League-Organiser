@@ -22,6 +22,7 @@ public class Teams {
   }
 
   public void addTeam() throws IOException {
+    //Adds a team to team registry
     if(mNumberOfTeams < mMaxTeams) {
       System.out.print("Please enter team name:  ");
       String teamName = mReader.readLine();
@@ -38,6 +39,11 @@ public class Teams {
     }
   }
 
+
+/*****************
+GETTERS
+*****************/
+
   public Team[] getTeams() {
     return mTeams;
   }
@@ -49,11 +55,6 @@ public class Teams {
 public int getMaxTeams() {
     return mMaxTeams;
   }
-  //
-  // @Override
-  // public String toString() {
-  //
-  //
-  // }
+
 
 }

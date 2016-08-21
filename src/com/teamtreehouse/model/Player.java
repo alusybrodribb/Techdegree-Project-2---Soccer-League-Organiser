@@ -17,21 +17,9 @@ public class Player implements Comparable<Player>, Serializable {
     this.previousExperience = previousExperience;
   }
 
-  public String getFirstName() {
-    return firstName;
-  }
-
-  public String getLastName() {
-    return lastName;
-  }
-
-  public int getHeightInInches() {
-    return heightInInches;
-  }
-
-  public boolean isPreviousExperience() {
-    return previousExperience;
-  }
+/***************************
+OVERRIDE FUNCTIONS
+***************************/
 
   @Override
   public int compareTo(Player other) {
@@ -75,4 +63,26 @@ public class Player implements Comparable<Player>, Serializable {
     result = 31 * result + (previousExperience ? 1 : 0);
     return result;
   }
+
+/************************
+GETTERS
+************************/
+
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public int getHeightInInches() {
+    return heightInInches;
+  }
+
+  public boolean isPreviousExperience() {
+    return previousExperience;
+  }
+
+
 }

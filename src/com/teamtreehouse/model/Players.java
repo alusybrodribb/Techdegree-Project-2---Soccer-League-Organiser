@@ -41,8 +41,22 @@ public class Players {
 
   }
 
+/********************
+GETTERS
+********************/
+
   public int getPlayerNumber() {
     return load().length + 1;
+  }
+
+  public int getLeagueExperience() {
+    int experience = 0;
+    for (int i = 0; i < load().length; i++) {
+      if (load()[i].isPreviousExperience()) {
+        experience ++;
+      }
+    }
+    return experience;
   }
 
 }

@@ -14,7 +14,6 @@ public class LeagueManager {
     organizer.importPlayers();
     organizer.run();
     System.exit(0);
-    // Your code here!
   }
 
 }
