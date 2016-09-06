@@ -64,6 +64,7 @@ public class Team implements Comparable<Team>, Serializable {
   }
 
   public void printTeamPlayers() {
+    //Prints a list of all players on the team
     System.out.printf("Team Name:\t%s%n",mTeamName);
     System.out.printf("Coach:\t\t%s%n%n", mCoach);
     System.out.printf("Players%n");
@@ -78,6 +79,7 @@ public class Team implements Comparable<Team>, Serializable {
   }
 
   public int teamExperience() {
+    //Returns number of players on team with previous experience
     int experiencedPlayers = 0;
     for (Map.Entry<Integer,Player> entry : mPlayers.entrySet()) {
       Player player = entry.getValue();
@@ -89,6 +91,7 @@ public class Team implements Comparable<Team>, Serializable {
   }
 
   public int averageHeight() {
+    //Returns average height of team
     int teamHeight = 0;
     int players = mPlayers.size();
     int average = 0;

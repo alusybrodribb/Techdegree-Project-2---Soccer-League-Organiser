@@ -23,6 +23,7 @@ INFERRED PROPERTIES
 
 
   public String inchesToFeet(int inchesHeight) {
+    //Converts player heights to feet and inches
     int feet = inchesHeight / 12;
     int inches = inchesHeight % 12;
     String height = feet + "'" + inches + "\"";

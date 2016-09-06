@@ -23,6 +23,7 @@ public class Teams {
 
   public void addTeam() throws IOException {
     //Adds a team to team registry
+    //If team name already exists, prompts user to chose a different name
     boolean teamNamed = false;
 
     String name = "";
