@@ -74,7 +74,7 @@ public class Team implements Comparable<Team>, Serializable {
       System.out.printf("%d\t %s%n", key, player.toString());
     }
     System.out.printf("%n%d of %d players have previous experience%n%n", teamExperience(), mPlayers.size());
-    System.out.printf("Average Height:\t%d", averageHeight());
+    System.out.printf("Average Height:\t%d%n", averageHeight());
   }
 
   public int teamExperience() {
@@ -91,11 +91,16 @@ public class Team implements Comparable<Team>, Serializable {
   public int averageHeight() {
     int teamHeight = 0;
     int players = mPlayers.size();
+    int average = 0;
     for (Map.Entry<Integer,Player> entry : mPlayers.entrySet()) {
       Player player = entry.getValue();
       teamHeight += player.getHeightInInches();
     }
-    int average = teamHeight / players;
+    if (players > 0) {
+      average = teamHeight / players;
+    } else {
+      average = 0;
+    }
     return average;
   }
 
@@ -125,8 +130,7 @@ OVERRIDE FUNCTIONS
     int players = mPlayers.size();
     int height = averageHeight();
     int experience = teamExperience();
-
-    return String.format("Team Name:\t\t%s%nCoach:\t\t\t%s%n%nAverage height:\t%d inches%nPlayers shorter than 3'4\":\t%d%nPlayers between 3'4\" and 3'8\":\t%d%nPlayers taller than 3'8\":\t%d%n%d out of %d players have experience%n%n", mTeamName, mCoach, height, mShortPlayers, mMediumPlayers, mTallPlayers, experience, players);
+    return String.format("Team Name:\t\t%s%nCoach:\t\t\t%s%n%nAverage height:\t%d inches%nPlayers shorter than 3'4\":\t%d%nPlayers between 3'4\" and 3'8\":\t%d%nPlayers taller than 3'8\":\t%d%n%d out of %d players have experience.%n%n", mTeamName, mCoach, height, mShortPlayers, mMediumPlayers, mTallPlayers, experience, players);
 
   }
 

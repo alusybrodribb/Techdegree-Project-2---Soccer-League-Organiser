@@ -9,7 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashSet;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -32,7 +32,7 @@ public class Organizer {
     mAssignedPlayers = new TreeMap<Integer, Player>();
     mUnassignedPlayers = new TreeMap<Integer, Player>();
     mReader = new BufferedReader(new InputStreamReader(System.in));
-    mMenu = new HashMap<String, String>();
+    mMenu = new LinkedHashMap<String, String>();
     mainMenu();
     mPlayers = Players.load();
     mTeams = teams;
@@ -41,6 +41,7 @@ public class Organizer {
   }
 
   public void importPlayers() {
+    //imports player list into unassigned players
     Arrays.sort(mPlayers);
     for (int i = 0; i < (mPlayers.length); i++) {
       mUnassignedPlayers.put(i+1, mPlayers[i]);
@@ -52,8 +53,9 @@ public class Organizer {
     mAverageHeight = mAverageHeight / mPlayers.length;
   }
 
-
-
+/**************************
+MAIN MENU SWITCH
+**************************/
 
   public void run() {
     int teamNo = -1;
@@ -70,7 +72,7 @@ public class Organizer {
           case "add":
           case "a":
             teamNo = teamMenu();
-            if (teamNo== -1 || teamNo >= mTeams.getMaxTeams()) {
+            if (teamNo== -1) {
               break;
             }
             team = mTeams.getTeams()[teamNo];
@@ -85,8 +87,8 @@ public class Organizer {
             team = mTeams.getTeams()[teamNo];
             removePlayers(team);
             break;
-          case "players":
-          case "p":
+          case "view":
+          case "v":
             showPlayers();
             break;
           case "quit":
@@ -96,12 +98,18 @@ public class Organizer {
           case "height":
           case "h":
             teamNo = teamMenu();
+            if (teamNo== -1) {
+              break;
+            }
             team = mTeams.getTeams()[teamNo];
             heightReport(team);
             break;
           case "experience":
           case "e":
               teamNo = teamMenu();
+              if (teamNo== -1) {
+                break;
+              }
               team = mTeams.getTeams()[teamNo];
               experienceReport(team);
               break;
@@ -109,8 +117,17 @@ public class Organizer {
           case "l":
             leagueBalanceReport();
             break;
+          case "print":
+          case "p":
+            teamNo = teamMenu();
+            if (teamNo== -1) {
+              break;
+            }
+            team = mTeams.getTeams()[teamNo];
+            team.printTeamPlayers();
+            break;
           default:
-            System.out.printf("Unknown command '%s', Try again %s%s", choice);
+            System.out.printf("Unknown command '%s', Try again %n%n", choice);
             break;
         }
       } catch(IOException ioe) {
@@ -129,10 +146,11 @@ public class Organizer {
       mMenu.put("(N)ew", "Add a new team to the league.");
       mMenu.put("(A)dd", "Add a player to a team.");
       mMenu.put("(R)emove", "Remove a player from a team.");
-      mMenu.put("(P)layers","View Players");
+      mMenu.put("(V)iew","View Players");
       mMenu.put("(H)eight","View Team Height Report");
       mMenu.put("(E)xperience","View Team Experience Report");
       mMenu.put("(L)eague", "League Balance Report");
+      mMenu.put("(P)rint", "Print Team");
       mMenu.put("(Q)uit", "Quit the program.");
     }
 
@@ -140,8 +158,7 @@ public class Organizer {
       //For Selecting Teams
       System.out.printf("The league currently has the following teams:%n%n");
         int menuInd = 1;
-        int teamNo = 0;
-        String choice = -1;
+        int teamNo = -1;
         boolean teamCreated = false;
         for (Team team : mTeams.getTeams()) {
           if (team != null) {
@@ -149,32 +166,42 @@ public class Organizer {
           teamCreated = true;
           }
         menuInd++;
-      } if (teamCreated) {
-        do {
-          System.out.printf("%nWhich team did you want to add players to?%n(please enter team number, or q to go to previous menu)%n");
-        String choice = mReader.readLine().substring(0,1);
-        if (choice.toLowerCase() == "q") {
-          teamNo = -1;
-          return teamNo;
-        } else {
-          try{
-              teamNo = Integer.parseInt(choice) - 1;
-              return teamNo;
-            } catch (NumberFormatException nfe) {
-              System.out.printf("Invalid command - please enter a team No.");
+      }
+      if (teamCreated) {
+      teamNo = teamSelect(menuInd);
+    } else {
+        System.out.printf("No Teams available.%n%nPlease add teams before assigning players.%n%n");
+      }
+    return teamNo;
+  }
+
+    public int teamSelect(int menuItems) throws IOException {
+      String choice = "";
+      boolean choiceMade = false;
+      int teamNo = -1;
+      System.out.printf("%nWhich team did you want to add players to?%n(please enter team number, or q to go to previous menu)%n");
+      do {
+        try {
+          choice = mReader.readLine().trim().toLowerCase().substring(0,1);
+          if (choice.equals("q")) {
+            choiceMade = true;
+            System.out.printf("Returning to previous menu.%n%n");
+          } else {
+            int choiceAsInt = Integer.parseInt(choice);
+            if (choiceAsInt <= menuItems && choiceAsInt > 0) {
+              teamNo = choiceAsInt - 1;
+              choiceMade = true;
+            } else {
+              System.out.printf("Please enter a valid number, or 'q' to return to previous menu.%n");
             }
           }
-        } while (teamNo != -1);
-      } else {
-        System.out.printf("No Teams available.%n%nPlease add teams before assigning players.%n%n");
-        teamNo = -1;
-      }
+        } catch (StringIndexOutOfBoundsException | NumberFormatException  ex) {
+          System.out.printf("Please enter a valid number, or 'q' to return to previous menu.%n");
+        }
+      } while (!choiceMade);
       return teamNo;
     }
 
-/*************************
-MAIN MENU PROMPTER
-***********************/
 
     public String prompt() throws IOException {
         System.out.printf("%nThere are currently %d registered players.%n", mPlayers.length);
@@ -197,7 +224,7 @@ MENU FUNCTIONS
 
     public void addPlayers(Team team) throws IOException {
       //Allows Organiser to add players to a team
-      int index = 0;
+      int index = -1;
       System.out.printf("The following players can be assigned to the team:%n");
       listPlayers("Unassigned", mUnassignedPlayers);
       System.out.printf("%n%nPlease enter the players' player numbers, separated by a space or comma.%n");
@@ -229,6 +256,7 @@ MENU FUNCTIONS
 
   public void removePlayers(Team team) throws IOException {
     //Allows organiser to remove players from a team
+    int index = -1;
     System.out.printf("The following players have been assigned to this team:%n");
     team.printTeamPlayers();
     System.out.printf("%nWhich players do you want to remove from this team?%n");
@@ -237,12 +265,16 @@ MENU FUNCTIONS
     String[] playerIndex  = playerIndexAsString.split("[,\\s]+");
     System.out.printf("The following players have now been removed from the team:%n%n");
     for (int i = 0; i < playerIndex.length; i++) {
-        int index = Integer.parseInt(playerIndex[i]);
-          if (team.getPlayers().containsKey(index)) {
-          System.out.printf("%d\t %s%n", index, team.getPlayers().get(index).toString());
-          team.removePlayer(index);
-          mUnassignedPlayers.put(index, team.getPlayers().get(index));
-          mAssignedPlayers.remove(index);
+      try {
+        index = Integer.parseInt(playerIndex[i]);
+      } catch (NumberFormatException nfe) {
+        index = -1;
+      }
+      if (team.getPlayers().containsKey(index)) {
+        System.out.printf("%d\t %s%n", index, team.getPlayers().get(index).toString());
+        team.removePlayer(index);
+        mUnassignedPlayers.put(index, team.getPlayers().get(index));
+        mAssignedPlayers.remove(index);
       }
     }
   }
@@ -260,7 +292,7 @@ MENU FUNCTIONS
     //Shows players in a team grouped by height
     System.out.printf(team.toString());
     System.out.printf("%nHeight report for %s%n%n", team.getTeamName());
-    System.out.printf("Players less than 40 inches tall%n%n");
+    System.out.printf("Players shorter than 3'4\"%n%n");
     for (Map.Entry<Integer,Player> entry : team.getPlayers().entrySet()) {
       if (entry.getValue().getHeightInInches() < 40) {
         Integer key = entry.getKey();
@@ -268,7 +300,7 @@ MENU FUNCTIONS
         System.out.printf("%d\t %s%n", key, player.toString());
       }
     }
-    System.out.printf("Players between 40 and 44 inches tall (inclusive)%n%n");
+    System.out.printf("Players between 3'4\" and 3'8\" (inclusive)%n%n");
     for (Map.Entry<Integer,Player> entry : team.getPlayers().entrySet()) {
       if ((entry.getValue().getHeightInInches() > 40) && (entry.getValue().getHeightInInches() > 40)){
         Integer key = entry.getKey();
@@ -276,7 +308,7 @@ MENU FUNCTIONS
         System.out.printf("%d\t %s%n", key, player.toString());
       }
     }
-    System.out.printf("Players between over 44 inches tall%n%n");
+    System.out.printf("Players taller than 3'8\"%n%n");
     for (Map.Entry<Integer,Player> entry : team.getPlayers().entrySet()) {
       if (entry.getValue().getHeightInInches() > 44) {
         Integer key = entry.getKey();
@@ -310,7 +342,6 @@ MENU FUNCTIONS
       }
     }
     System.out.printf("%n%d of %d players in the league have previous experience.%n", mLeagueExperience, mPlayers.length);
-
   }
 
     public void listPlayers(String listName, Map<Integer, Player> map) {

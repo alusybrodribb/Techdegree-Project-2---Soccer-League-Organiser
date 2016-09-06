@@ -23,12 +23,25 @@ public class Teams {
 
   public void addTeam() throws IOException {
     //Adds a team to team registry
+    boolean teamNamed = false;
+
+    String name = "";
     if(mNumberOfTeams < mMaxTeams) {
-      System.out.print("Please enter team name:  ");
-      String teamName = mReader.readLine();
+      do {
+        boolean teamNameExists = false;
+        System.out.print("Please enter team name:  ");
+        name = mReader.readLine();
+        for (int i = 0; i < mTeams.length; i++) {
+          if (mTeams[i] != null && mTeams[i].getTeamName().equals(name)) {
+            teamNameExists = true;
+            System.out.printf("Team name already exists - please choose another name.%n");
+          }
+        }
+        teamNamed = !teamNameExists;
+      } while (!teamNamed);
       System.out.print("Please enter team coach:  ");
       String coach = mReader.readLine();
-      Team team = new Team(teamName, coach);
+      Team team = new Team(name, coach);
       System.out.printf("Adding new team: %s%n%n", team.getTeamName());
       mTeams[mNumberOfTeams] = team;
       mNumberOfTeams++;
@@ -38,6 +51,7 @@ public class Teams {
       System.out.printf("%nSorry - you have aready created enough teams for this competition.%n%n");
     }
   }
+
 
 
 /*****************

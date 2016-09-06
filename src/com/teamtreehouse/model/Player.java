@@ -17,9 +17,21 @@ public class Player implements Comparable<Player>, Serializable {
     this.previousExperience = previousExperience;
   }
 
+/********************************
+INFERRED PROPERTIES
+*******************************/
+
+
+  public String inchesToFeet(int inchesHeight) {
+    int feet = inchesHeight / 12;
+    int inches = inchesHeight % 12;
+    String height = feet + "'" + inches + "\"";
+    return height;
+  }
+
 /***************************
 OVERRIDE FUNCTIONS
-***************************/
+  ***************************/
 
   @Override
   public int compareTo(Player other) {
@@ -36,7 +48,7 @@ OVERRIDE FUNCTIONS
   @Override
   public String toString() {
     String name = lastName + ", " + firstName;
-    String height = heightInInches + " in";
+    String height = inchesToFeet(heightInInches);
     String experience = (previousExperience ? "Y" : "N");
     return String.format("%-30s%-15s%10s", name, height, experience) ;
   }
@@ -79,6 +91,8 @@ GETTERS
   public int getHeightInInches() {
     return heightInInches;
   }
+
+
 
   public boolean isPreviousExperience() {
     return previousExperience;
