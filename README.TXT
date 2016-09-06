@@ -1,7 +1,13 @@
 ************************************************
 SOCCER LEAGUE ORGANISER BY ALISON BRODRIBB
 **********************************************
+Alison (Lusy) Brodribb (nee Parker)
+September 2016
 
+This is my second Java application, which I am making as part of
+the Treehouse Techdegree
+
+*******************
 RUNNING THE PROGRAM
 
 To run program, go to program folder in command prompt and run the following:
