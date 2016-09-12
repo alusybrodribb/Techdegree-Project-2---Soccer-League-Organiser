@@ -104,15 +104,6 @@ MAIN MENU SWITCH
             team = mTeams.getTeams()[teamNo];
             heightReport(team);
             break;
-          case "experience":
-          case "e":
-              teamNo = teamMenu();
-              if (teamNo== -1) {
-                break;
-              }
-              team = mTeams.getTeams()[teamNo];
-              experienceReport(team);
-              break;
           case "league":
           case "l":
             leagueBalanceReport();
@@ -148,7 +139,6 @@ MAIN MENU SWITCH
       mMenu.put("(R)emove", "Remove a player from a team.");
       mMenu.put("(V)iew","View Players");
       mMenu.put("(H)eight","View Team Height Report");
-      mMenu.put("(E)xperience","View Team Experience Report");
       mMenu.put("(L)eague", "League Balance Report");
       mMenu.put("(P)rint", "Print Team");
       mMenu.put("(Q)uit", "Quit the program.");
@@ -164,8 +154,8 @@ MAIN MENU SWITCH
           if (team != null) {
           System.out.printf("%d) %s%n", menuInd, team.getTeamName());
           teamCreated = true;
+          menuInd++;
           }
-        menuInd++;
       }
       if (teamCreated) {
       teamNo = teamSelect(menuInd);
@@ -179,7 +169,7 @@ MAIN MENU SWITCH
       String choice = "";
       boolean choiceMade = false;
       int teamNo = -1;
-      System.out.printf("%nWhich team did you want to add players to?%n(please enter team number, or q to go to previous menu)%n");
+      System.out.printf("%nPlease enter team number to select a team, or q to go to previous menu)%n");
       do {
         try {
           choice = mReader.readLine().trim().toLowerCase().substring(0,1);
@@ -188,7 +178,7 @@ MAIN MENU SWITCH
             System.out.printf("Returning to previous menu.%n%n");
           } else {
             int choiceAsInt = Integer.parseInt(choice);
-            if (choiceAsInt <= menuItems && choiceAsInt > 0) {
+            if (choiceAsInt < menuItems && choiceAsInt > 0) {
               teamNo = choiceAsInt - 1;
               choiceMade = true;
             } else {
@@ -272,9 +262,9 @@ MENU FUNCTIONS
       }
       if (team.getPlayers().containsKey(index)) {
         System.out.printf("%d\t %s%n", index, team.getPlayers().get(index).toString());
-        team.removePlayer(index);
         mUnassignedPlayers.put(index, team.getPlayers().get(index));
         mAssignedPlayers.remove(index);
+        team.removePlayer(index);
       }
     }
   }
@@ -292,39 +282,38 @@ MENU FUNCTIONS
     //Shows players in a team grouped by height
     System.out.printf(team.toString());
     System.out.printf("%nHeight report for %s%n%n", team.getTeamName());
-    System.out.printf("Players shorter than 3'4\"%n%n");
+    System.out.printf("Players 3'4\" or shorter%n%n");
     for (Map.Entry<Integer,Player> entry : team.getPlayers().entrySet()) {
-      if (entry.getValue().getHeightInInches() < 40) {
+      if (entry.getValue().getHeightInInches() <= 40) {
         Integer key = entry.getKey();
         Player player = entry.getValue();
         System.out.printf("%d\t %s%n", key, player.toString());
       }
     }
-    System.out.printf("Players between 3'4\" and 3'8\" (inclusive)%n%n");
+    System.out.printf("%nPlayers between 3'4\" and 3'11\"%n%n");
     for (Map.Entry<Integer,Player> entry : team.getPlayers().entrySet()) {
-      if ((entry.getValue().getHeightInInches() > 40) && (entry.getValue().getHeightInInches() > 40)){
+      if ((entry.getValue().getHeightInInches() > 40) && (entry.getValue().getHeightInInches() < 47)){
         Integer key = entry.getKey();
         Player player = entry.getValue();
         System.out.printf("%d\t %s%n", key, player.toString());
       }
     }
-    System.out.printf("Players taller than 3'8\"%n%n");
+    System.out.printf("%nPlayers 3'11\" or taller%n%n");
     for (Map.Entry<Integer,Player> entry : team.getPlayers().entrySet()) {
-      if (entry.getValue().getHeightInInches() > 44) {
+      if (entry.getValue().getHeightInInches() >= 47) {
         Integer key = entry.getKey();
         Player player = entry.getValue();
         System.out.printf("%d\t %s%n", key, player.toString());
       }
     }
-    System.out.printf("%nTeam average height is %d%n%n", team.averageHeight());
-    System.out.printf("League average height is %d%n%n", mAverageHeight);
+    System.out.printf("%nTeam average height is %d inches%n%n", team.averageHeight());
+    System.out.printf("League average height is %d inches%n%n", mAverageHeight);
 
   }
 
   public void experienceReport(Team team) {
     //Shows players in a team gouped by experience
     System.out.printf(team.toString());
-    System.out.printf("%nExperience Report report for %s%n%n", team.getTeamName());
     System.out.printf("Players with experience%n%n");
     for (Map.Entry<Integer,Player> entry : team.getPlayers().entrySet()) {
       if (entry.getValue().isPreviousExperience()) {
@@ -341,7 +330,7 @@ MENU FUNCTIONS
         System.out.printf("%d\t %s%n", key, player.toString());
       }
     }
-    System.out.printf("%n%d of %d players in the league have previous experience.%n", mLeagueExperience, mPlayers.length);
+    System.out.printf("%n%n", mLeagueExperience, mPlayers.length);
   }
 
     public void listPlayers(String listName, Map<Integer, Player> map) {
@@ -360,7 +349,7 @@ MENU FUNCTIONS
     //Shows League Balance Report
     for (Team team : mTeams.getTeams()) {
       if (team != null) {
-        System.out.printf(team.toString());
+        experienceReport(team);
       }
     }
     System.out.printf("%nLeague Average Height:\t%d inches%n", mAverageHeight);

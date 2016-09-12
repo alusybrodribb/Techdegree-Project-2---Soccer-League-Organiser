@@ -52,9 +52,9 @@ public class Team implements Comparable<Team>, Serializable {
 
   public void removePlayer(int player) {
     //Removes player from team and decrease no of players in that height bracket
-    if (mPlayers.get(player).getHeightInInches() < 40) {
+    if (mPlayers.get(player).getHeightInInches() <= 40) {
       mShortPlayers--;
-    } else if (mPlayers.get(player).getHeightInInches() > 44) {
+    } else if (mPlayers.get(player).getHeightInInches() >= 47) {
       mTallPlayers--;
     } else {
       mMediumPlayers--;
@@ -75,7 +75,7 @@ public class Team implements Comparable<Team>, Serializable {
       System.out.printf("%d\t %s%n", key, player.toString());
     }
     System.out.printf("%n%d of %d players have previous experience%n%n", teamExperience(), mPlayers.size());
-    System.out.printf("Average Height:\t%d%n", averageHeight());
+    System.out.printf("Average Height:\t%d inches%n", averageHeight());
   }
 
   public int teamExperience() {
@@ -133,7 +133,7 @@ OVERRIDE FUNCTIONS
     int players = mPlayers.size();
     int height = averageHeight();
     int experience = teamExperience();
-    return String.format("Team Name:\t\t%s%nCoach:\t\t\t%s%n%nAverage height:\t%d inches%nPlayers shorter than 3'4\":\t%d%nPlayers between 3'4\" and 3'8\":\t%d%nPlayers taller than 3'8\":\t%d%n%d out of %d players have experience.%n%n", mTeamName, mCoach, height, mShortPlayers, mMediumPlayers, mTallPlayers, experience, players);
+    return String.format("Team Name:\t\t%s%nCoach:\t\t\t%s%n%nAverage height:\t%d inches%nPlayers 3'4\" or shorter:\t%d%nPlayers between 3'4\" and 3'11\":\t%d%nPlayers 3'11\" or taller :\t%d%n%d out of %d players have experience.%n%n", mTeamName, mCoach, height, mShortPlayers, mMediumPlayers, mTallPlayers, experience, players);
 
   }
 
